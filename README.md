@@ -6,9 +6,12 @@
 [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![R](https://img.shields.io/badge/R-276DC3?style=for-the-badge&logo=r&logoColor=white)](https://www.r-project.org/)
 [![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hanamotuma/Customer-Retention-System)
 
-**A full-stack analytics platform that bridges web engineering and data science to predict customer churn and optimize retention strategies.**
+**A polyglot full-stack analytics platform bridging web engineering and data science to predict customer churn and safeguard recurring revenue.**
+
+[View Architecture](#-system-architecture--logic) • [Features](#-key-features) • [Quick Start](#-quick-start-guide) • [Algorithm](#-the-churn-algorithm)
 
 </div>
 
@@ -16,39 +19,20 @@
 
 ## 📖 Overview
 
-The **Customer Retention System** is a polyglot application designed for e-commerce businesses. It ingests raw customer transaction data, processes it through an embedded R Machine Learning engine using the RFM (Recency, Frequency, Monetary) model, and visualizes the churn risk in a dynamic Laravel-powered dashboard.
+The **Customer Retention System** is a full-stack analytics application designed for e-commerce and subscription businesses. It ingests raw transaction data, passes it through an embedded **R Machine Learning engine** using the **RFM (Recency, Frequency, Monetary)** model, and presents dynamic risk scores through a clean Laravel dashboard.
 
-By identifying "High Risk" customers before they leave, businesses can take proactive steps (like offering discounts or re-engagement emails) to save revenue.
+By identifying high-risk customers before they churn, businesses can take targeted re-engagement actions—such as automated email offers, loyalty incentives, or custom support outreach—to maximize customer lifetime value.
+
+---
+
+## ✨ Key Features
+
+* 📈 **Dynamic Churn Dashboard:** Real-time visibility into customer risk profiles categorized into High, Medium, and Low Risk.
+* 🔄 **Seamless Polyglot Integration:** Automated background data exchange between PHP (Laravel) and R scripts via JSON output pipelines.
+* 🎯 **RFM Scoring Engine:** Weighted statistical algorithm evaluating customer transaction recency, order frequency, and monetary spending.
+* ⚡ **Zero-Config Local Database:** Fast and lightweight storage utilizing SQLite.
+* 🎨 **Responsive Dashboard UI:** Clean interface built for fast data scannability and quick decision-making.
 
 ---
 
 ## 🧠 System Architecture & Logic
-
-This project demonstrates how to connect a modern PHP web framework with a statistical programming language:
-
-1. **The Web Layer (Laravel):** Manages the SQLite database and serves the UI.
-2. **The Bridge (CSV Export):** When the dashboard loads, Laravel dynamically exports the database records into a temporary `customers.csv` file.
-3. **The Brain (R Engine):** Laravel executes an `Rscript` command, passing the CSV file to a custom R algorithm.
-4. **The Output (JSON & UI):** R calculates a Churn Probability Score (0-100%) and outputs a `churn_results.json` file. Laravel reads this JSON and renders a color-coded risk dashboard.
-
-### 🔬 The Algorithm
-The R engine categorizes customers using a weighted formula:
-*   **Recency (50% weight):** Days since their last purchase (higher is worse).
-*   **Frequency (25% weight):** Total number of purchases (lower is worse).
-*   **Monetary (25% weight):** Total amount spent (lower is worse).
-
----
-
-## 🚀 Quick Start Guide
-
-### Prerequisites
-*   PHP >= 8.1
-*   Composer
-*   R Programming Language (installed and added to your system PATH)
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/hanamotuma/Customer-Retention-System.git
-   cd Customer-Retention-System/customer-retention-app
