@@ -31,7 +31,7 @@ This project demonstrates how to connect a modern PHP web framework with a stati
 3. **The Brain (R Engine):** Laravel executes an `Rscript` command, passing the CSV file to a custom R algorithm.
 4. **The Output (JSON & UI):** R calculates a Churn Probability Score (0-100%) and outputs a `churn_results.json` file. Laravel reads this JSON and renders a color-coded risk dashboard.
 
-### 🔬 The Algorithm
+### The Algorithm
 The R engine categorizes customers using a weighted formula:
 *   **Recency (50% weight):** Days since their last purchase (higher is worse).
 *   **Frequency (25% weight):** Total number of purchases (lower is worse).
