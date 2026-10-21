@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📊 Customer Retention System
+#  Customer Retention System
 ### AI-Driven Churn Prediction & Revenue Analytics Platform
 
 [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
@@ -14,7 +14,7 @@
 
 ---
 
-## 📖 Overview
+##  Overview
 
 The **Customer Retention System** is a polyglot application designed for e-commerce businesses. It ingests raw customer transaction data, processes it through an embedded R Machine Learning engine using the RFM (Recency, Frequency, Monetary) model, and visualizes the churn risk in a dynamic Laravel-powered dashboard.
 
@@ -22,7 +22,7 @@ By identifying "High Risk" customers before they leave, businesses can take proa
 
 ---
 
-## 🧠 System Architecture & Logic
+##  System Architecture & Logic
 
 This project demonstrates how to connect a modern PHP web framework with a statistical programming language:
 
@@ -39,7 +39,7 @@ The R engine categorizes customers using a weighted formula:
 
 ---
 
-## 🚀 Quick Start Guide
+##  Quick Start Guide
 
 Follow these steps to spin up the application locally. 
 
