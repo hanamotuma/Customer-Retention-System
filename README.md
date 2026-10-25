@@ -69,14 +69,4 @@ The R engine categorizes customers using a weighted formula:
 *   **Monetary (25%):** Total spent (Lower is worse).
 
 ---
-
-## 🛣️ Future Roadmap
-- [x] Implement R Machine Learning integration.
-- [x] Design custom modern UI.
-- [x] Migrate from Blade to Vue.js 3.
-- [ ] Implement User Authentication (Laravel Sanctum).
-- [ ] Add a file upload UI for custom CSV datasets.
-- [ ] Deploy to a cloud provider (AWS / DigitalOcean).
-
----
 *Built with Laravel, Vue.js, R, and a focus on data.*
