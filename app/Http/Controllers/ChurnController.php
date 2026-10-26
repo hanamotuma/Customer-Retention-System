@@ -68,4 +68,33 @@ class ChurnController extends Controller
             'r_error' => $output,
         ]);
     }
+
+        // This new method serves data for Vue.js
+    public function apiIndex()
+    {
+        $customers = DB::table('customers')->get();
+
+        // 1. Create CSV for R
+        $csvFilePath = base_path('customers.csv');
+        $file = fopen($csvFilePath, 'w');
+        fputcsv($file, ['id', 'name', 'recency', 'frequency', 'monetary']);
+        foreach ($customers as $customer) {
+            fputcsv($file, [$customer->id, $customer->name, $customer->recency, $customer->frequency, $customer->monetary]);
+        }
+        fclose($file);
+
+        // 2. Run R Script
+        $rScript = base_path('churn_model.R');
+        shell_exec("Rscript \"$rScript\" \"$csvFilePath\" 2>&1");
+
+        // 3. Read JSON results
+        $jsonFilePath = base_path('churn_results.json');
+        if (File::exists($jsonFilePath)) {
+            $jsonData = File::get($jsonFilePath);
+            // Return it as a proper JSON API response
+            return response()->json(json_decode($jsonData, true));
+        }
+
+        return response()->json(['error' => 'Failed to process data'], 500);
+    }
 }
