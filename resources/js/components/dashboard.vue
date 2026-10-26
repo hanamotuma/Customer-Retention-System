@@ -6,10 +6,10 @@
         <div class="sidebar">
             <!-- Logo Integration -->
             <div class="sidebar-logo">
-                <img src="/images/logo.png" alt="Retention Logo" class="logo-img" v-if="!isDarkMode">
+                <img :src="'/images/logo.png'" alt="Retention Logo" class="logo-img" v-if="!isDarkMode">
                 <!-- If you have a white version of the logo for dark mode, you could swap it here. 
                      For now, we will just use the same image. -->
-                <img src="/images/logo.png" alt="Retention Logo" class="logo-img" v-if="isDarkMode">
+                <img :src="'/images/logo.png'" alt="Retention Logo" class="logo-img" v-if="isDarkMode">
             </div>
             
             <div class="nav-icon active"><i class="fa-solid fa-house"></i></div>
@@ -254,10 +254,10 @@ watch(isDarkMode, () => {
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
-body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 0; }
 
 /* --- LAYOUT --- */
-.app-container { display: flex; width: 1400px; height: 900px; background: var(--bg-panel); border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); overflow: hidden; border: 10px solid var(--border-color); }
+.app-container { display: flex; width: 100vw; height: 100vh; height: 100dvh; background: var(--bg-panel); overflow: hidden; }
 
 /* --- SIDEBAR --- */
 .sidebar { width: 100px; background: var(--bg-panel); display: flex; flex-direction: column; align-items: center; padding: 30px 0; border-right: 1px solid var(--border-color); }
@@ -267,9 +267,9 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); col
 .nav-icon:hover, .nav-icon.active { background: var(--brand-blue); color: white; box-shadow: 0 10px 20px rgba(31, 97, 141, 0.3); }
 
 /* --- MAIN DASHBOARD --- */
-.main-dashboard { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-body); }
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.header h1 { font-size: 1.8rem; color: var(--text-main); font-weight: 600; }
+.main-dashboard { flex: 1; min-width: 0; padding: 40px; overflow-y: auto; background: var(--bg-body); }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; gap: 20px; }
+.header h1 { font-size: clamp(1.3rem, 2vw, 1.8rem); color: var(--text-main); font-weight: 600; }
 .subtitle { color: var(--text-muted); font-size: 0.9rem; }
 .header-actions { display: flex; gap: 15px; align-items: center; }
 .search-bar { background: var(--bg-card); padding: 10px 20px; border-radius: 20px; color: var(--text-muted); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
@@ -310,7 +310,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); col
 .fill-warning { background: #f39c12; }
 
 /* --- RIGHT PANEL --- */
-.right-panel { width: 320px; background: var(--bg-panel); padding: 40px 30px; border-left: 1px solid var(--border-color); }
+.right-panel { width: 320px; flex-shrink: 0; background: var(--bg-panel); padding: 40px 30px; border-left: 1px solid var(--border-color); overflow-y: auto; }
 .right-panel h2 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 20px; display: flex; justify-content: space-between;}
 .view-all { color: var(--brand-blue); font-size: 0.8rem; cursor: pointer; }
 .chart-container { position: relative; width: 100%; height: 200px; margin-top: 20px;}
@@ -329,4 +329,35 @@ td { padding: 15px; border-bottom: 1px solid var(--border-color); font-size: 0.9
 .badge-high { background: #fee2e2; color: #e74c3c; }
 .badge-mod { background: #fef3c7; color: #f39c12; }
 .badge-low { background: #d1fae5; color: var(--brand-teal); }
+
+/* --- RESPONSIVE LAYOUT --- */
+@media (max-width: 1280px) {
+    .main-dashboard { padding: 28px; }
+    .right-panel { width: 280px; padding: 30px 22px; }
+    .grid-layout { gap: 18px; }
+    .card { padding: 24px; border-radius: 24px; }
+}
+
+@media (max-width: 1024px) {
+    body { padding: 12px; align-items: flex-start; }
+    .app-container { height: auto; max-height: none; flex-direction: column; border-width: 6px; border-radius: 24px; }
+    .sidebar { width: 100%; flex-direction: row; justify-content: center; gap: 12px; padding: 14px 18px; border-right: 0; border-bottom: 1px solid var(--border-color); }
+    .sidebar-logo { width: auto; margin: 0 12px 0 0; }
+    .logo-img { width: 45px; }
+    .nav-icon { width: 44px; height: 44px; margin-bottom: 0; }
+    .main-dashboard { overflow: visible; padding: 24px; }
+    .right-panel { width: 100%; border-left: 0; border-top: 1px solid var(--border-color); padding: 24px; }
+    .chart-container { max-width: 420px; margin-left: auto; margin-right: auto; }
+}
+
+@media (max-width: 640px) {
+    .header { flex-direction: column; align-items: flex-start; margin-bottom: 20px; }
+    .header-actions { width: 100%; }
+    .search-bar { flex: 1; }
+    .grid-layout { grid-template-columns: 1fr; }
+    .card-primary { grid-column: 1 / -1; min-height: 180px; }
+    .card-secondary { grid-column: auto; }
+    .table-container { padding: 15px; overflow-x: auto; }
+    table { min-width: 560px; }
+}
 </style>
