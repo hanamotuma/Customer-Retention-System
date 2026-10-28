@@ -97,4 +97,33 @@ class ChurnController extends Controller
 
         return response()->json(['error' => 'Failed to process data'], 500);
     }
+
+        // API endpoint to handle CSV upload
+    public function uploadCsv(Request $request)
+    {
+        // 1. Validate the file
+        $request->validate([
+            'csv_file' => 'required|mimes:csv,txt|max:2048'
+        ]);
+
+        $file = $request->file('csv_file');
+        
+        // 2. Move the uploaded file to the main project directory
+        $filename = 'uploaded_customers.csv';
+        $file->move(base_path(), $filename);
+        $filePath = base_path($filename);
+
+        // 3. Run the R Script on the new file
+        $rScript = base_path('churn_model.R');
+        shell_exec("Rscript \"$rScript\" \"$filePath\" 2>&1");
+
+        // 4. Read and return the JSON results
+        $jsonFilePath = base_path('churn_results.json');
+        if (File::exists($jsonFilePath)) {
+            $jsonData = File::get($jsonFilePath);
+            return response()->json(json_decode($jsonData, true));
+        }
+
+        return response()->json(['error' => 'Failed to process uploaded data'], 500);
+    }
 }
