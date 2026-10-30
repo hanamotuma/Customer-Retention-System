@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 
 class ChurnController extends Controller
 {
@@ -69,33 +70,20 @@ class ChurnController extends Controller
         ]);
     }
 
-        // This new method serves data for Vue.js
-    public function apiIndex()
+           public function apiIndex()
     {
-        $customers = DB::table('customers')->get();
+        // 1. Get all customers from database
+        $customers = DB::table('customers')->get()->toArray();
 
-        // 1. Create CSV for R
-        $csvFilePath = base_path('customers.csv');
-        $file = fopen($csvFilePath, 'w');
-        fputcsv($file, ['id', 'name', 'recency', 'frequency', 'monetary']);
-        foreach ($customers as $customer) {
-            fputcsv($file, [$customer->id, $customer->name, $customer->recency, $customer->frequency, $customer->monetary]);
-        }
-        fclose($file);
+        // 2. Send the data to the R Plumber API (running on port 8001)
+        $response = Http::post('http://127.0.0.1:8001/predict', $customers);
 
-        // 2. Run R Script
-        $rScript = base_path('churn_model.R');
-        shell_exec("Rscript \"$rScript\" \"$csvFilePath\" 2>&1");
-
-        // 3. Read JSON results
-        $jsonFilePath = base_path('churn_results.json');
-        if (File::exists($jsonFilePath)) {
-            $jsonData = File::get($jsonFilePath);
-            // Return it as a proper JSON API response
-            return response()->json(json_decode($jsonData, true));
+        // 3. If R is successful, return the JSON to Vue
+        if ($response->successful()) {
+            return $response->json();
         }
 
-        return response()->json(['error' => 'Failed to process data'], 500);
+        return response()->json(['error' => 'R API failed to respond'], 500);
     }
 
         // API endpoint to handle CSV upload
