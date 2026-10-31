@@ -1,11 +1,10 @@
 <template>
     <div class="app-container" :class="{ 'dark-mode': isDark }">
         
-        <!-- 1. SLIM ICON SIDEBAR -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
-                <!-- FIXED LOGO PATH -->
-                <img :src="logoUrl" alt="Logo" class="logo-img" />
+                <img :src="'/images/logo.png'" alt="Logo" class="logo-img" />
             </div>
             <nav class="nav-menu">
                 <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i></a>
@@ -14,7 +13,6 @@
                 <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i></a>
             </nav>
             <div class="nav-bottom">
-                <!-- Theme Toggle -->
                 <a href="#" class="nav-item" @click.prevent="toggleTheme">
                     <i :class="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
                 </a>
@@ -24,18 +22,33 @@
             </div>
         </aside>
 
-        <!-- 2. MAIN CONTENT -->
+        <!-- MAIN CONTENT -->
         <main class="main-content">
             
-            <!-- Header -->
+            <!-- Header with Download Dropdown -->
             <header class="top-header">
                 <div>
                     <p class="greeting">Dashboard Overview</p>
                     <h1>Customer Information</h1>
                 </div>
+                
                 <div class="header-actions">
-                    <button class="btn-outline"><i class="fa-solid fa-arrow-left"></i> Back</button>
-                    <div class="user-profile">
+                    <!-- Single Download Button -->
+                    <button @click="showExportMenu = !showExportMenu" class="btn-outline" style="padding: 8px 12px;">
+                        <i class="fa-solid fa-download"></i> Export
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div v-if="showExportMenu" class="export-dropdown">
+                        <button @click="exportData('excel'); showExportMenu = false" class="dropdown-item">
+                            <i class="fa-solid fa-file-excel text-green"></i> Export to Excel
+                        </button>
+                        <button @click="exportData('pdf'); showExportMenu = false" class="dropdown-item">
+                            <i class="fa-solid fa-file-pdf text-red"></i> Export to PDF
+                        </button>
+                    </div>
+
+                    <div class="user-profile" style="margin-left: 15px;">
                         <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=random" class="avatar" />
                     </div>
                 </div>
@@ -43,11 +56,11 @@
 
             <!-- Loading State -->
             <div v-if="loading" class="loading-screen">
-                <i class="fa-solid fa-circle-notch fa-spin"></i> Initializing...
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Initializing AI Engine...
             </div>
 
             <div v-else>
-                <!-- High-Level KPIs -->
+                <!-- KPIs -->
                 <div class="kpi-row">
                     <div class="kpi-box">
                         <div class="kpi-icon bg-blue"><i class="fa-solid fa-users"></i></div>
@@ -72,21 +85,20 @@
                     </div>
                 </div>
 
-                <!-- Main Grid Layout -->
+                <!-- Main Grid -->
                 <div class="dashboard-grid">
                     
-                    <!-- Left Column (Interaction History & Table) -->
+                    <!-- Left Column -->
                     <div class="left-col">
                         <div class="section-header">
                             <h2>Risk Distribution Matrix</h2>
-                            <i class="fa-solid fa-ellipsis"></i>
                         </div>
                         
-                        <!-- Bento Box Style Risk Cards -->
+                        <!-- Bento Boxes -->
                         <div class="bento-grid">
                             <div class="bento-card bg-gradient-blue">
                                 <div class="bento-top">
-                                    <span class="bento-date">High Risk</span>
+                                    <span>High Risk</span>
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </div>
                                 <h2 class="bento-val">{{ highRiskCount }}</h2>
@@ -94,7 +106,7 @@
                             </div>
                             <div class="bento-card bg-gradient-teal">
                                 <div class="bento-top">
-                                    <span class="bento-date">Moderate Risk</span>
+                                    <span>Moderate Risk</span>
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </div>
                                 <h2 class="bento-val">{{ moderateRiskCount }}</h2>
@@ -102,7 +114,7 @@
                             </div>
                             <div class="bento-card bg-dark">
                                 <div class="bento-top">
-                                    <span class="bento-date">Low Risk</span>
+                                    <span>Low Risk</span>
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </div>
                                 <h2 class="bento-val">{{ lowRiskCount }}</h2>
@@ -110,18 +122,15 @@
                             </div>
                         </div>
 
-                        <!-- Data Table -->
+                        <!-- Data Table (Must be here) -->
                         <div class="table-section">
                             <CustomerTable :customers="customers" />
                         </div>
                     </div>
 
-                    <!-- Right Column (Customer Profile / AI Status) -->
+                    <!-- Right Column -->
                     <div class="right-col">
                         <div class="profile-card">
-                            <div class="profile-header">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </div>
                             <div class="profile-info">
                                 <div class="profile-avatar-wrap">
                                     <div class="profile-avatar">AI</div>
@@ -130,7 +139,6 @@
                                 <h2>R Engine</h2>
                                 <p class="role">Machine Learning Model</p>
                             </div>
-                            
                             <div class="contact-info">
                                 <div class="contact-item">
                                     <i class="fa-solid fa-microchip"></i>
@@ -142,27 +150,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="details-card">
-                            <div class="section-header">
-                                <h2>System Health</h2>
-                                <i class="fa-solid fa-pen"></i>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">Database</span>
-                                <span class="value badge-active">Connected</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">Vue Frontend</span>
-                                <span class="value badge-active">Rendered</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="label">Laravel API</span>
-                                <span class="value badge-active">200 OK</span>
-                            </div>
-                        </div>
                     </div>
-
                 </div>
             </div>
         </main>
@@ -177,8 +165,7 @@ import CustomerTable from './CustomerTable.vue';
 const customers = ref([]);
 const loading = ref(true);
 const isDark = ref(false);
-
-const logoUrl = `${import.meta.env.BASE_URL}images/logo.png`;
+const showExportMenu = ref(false);
 
 const toggleTheme = () => {
     isDark.value = !isDark.value;
@@ -191,11 +178,6 @@ const moderateRiskCount = computed(() => customers.value.filter(c => c.risk_labe
 const lowRiskCount = computed(() => customers.value.filter(c => c.risk_label === 'Low Risk').length);
 
 const fetchData = async () => {
-    // Force loading to stop after 3 seconds to prevent infinite spinning
-    const timeout = setTimeout(() => {
-        loading.value = false;
-    }, 3000);
-
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get('/api/churn-data', {
@@ -205,8 +187,30 @@ const fetchData = async () => {
     } catch (err) {
         console.error("API Error:", err);
     } finally {
-        clearTimeout(timeout); 
         loading.value = false;
+    }
+};
+
+const exportData = async (type) => {
+    try {
+        const token = localStorage.getItem('token');
+        const endpoint = type === 'excel' ? '/api/export/excel' : '/api/export/pdf';
+        
+        const response = await axios.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: 'blob' 
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', type === 'excel' ? 'Retention_Data.xlsx' : 'Risk_Report.pdf');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    } catch (err) {
+        console.error("Export failed", err);
+        alert(`Failed to export ${type.toUpperCase()}. Check terminal.`);
     }
 };
 
@@ -240,30 +244,58 @@ onMounted(() => {
     --border-color: #334155;
 }
 
-.app-container { display: flex; height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+.app-container { display: flex; height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-main); transition: background 0.3s; }
 
-/* --- SIDEBAR --- */
+/* SIDEBAR */
 .sidebar { width: 80px; background: var(--sidebar-bg); display: flex; flex-direction: column; align-items: center; padding: 30px 0; }
 .logo { margin-bottom: 40px; }
 .logo-img { width: 40px; height: 40px; border-radius: 8px; object-fit: contain; }
-
 .nav-menu, .nav-bottom { display: flex; flex-direction: column; gap: 15px; }
 .nav-item { color: #64748b; font-size: 1.2rem; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-decoration: none; transition: 0.2s; }
 .nav-item:hover, .nav-item.active { background: #1e293b; color: white; }
 .nav-bottom { margin-top: auto; }
 .text-red { color: #ef4444; }
 
-/* --- MAIN CONTENT --- */
+/* MAIN CONTENT */
 .main-content { flex: 1; overflow-y: auto; padding: 30px 40px; }
 .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .greeting { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 5px 0; }
 .top-header h1 { font-size: 1.8rem; font-weight: 700; margin: 0; }
-.header-actions { display: flex; align-items: center; gap: 20px; }
+.header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
 .btn-outline { padding: 8px 16px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); border-radius: 6px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .btn-outline:hover { background: var(--bg-card); }
 .avatar { width: 40px; height: 40px; border-radius: 50%; }
 
-/* --- KPI ROW --- */
+/* DROPDOWN */
+.export-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 60px; 
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 180px;
+    z-index: 9999; 
+    overflow: hidden;
+}
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.dropdown-item:hover { background: var(--bg-main); }
+
+/* KPIs */
 .kpi-row { display: flex; gap: 20px; margin-bottom: 30px; }
 .kpi-box { background: var(--bg-card); padding: 20px 24px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 20px; flex: 1; }
 .kpi-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
@@ -275,16 +307,14 @@ onMounted(() => {
 .text-red { color: #ef4444; }
 .text-green { color: #10b981; }
 
-/* --- DASHBOARD GRID --- */
+/* GRID */
 .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
 .left-col { display: flex; flex-direction: column; gap: 20px; }
-.right-col { display: flex; flex-direction: column; gap: 20px; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .section-header h2 { font-size: 1.1rem; font-weight: 600; margin: 0; }
-.section-header i { color: var(--text-muted); cursor: pointer; }
 
-/* --- BENTO BOX CARDS --- */
-.bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+/* BENTO */
+.bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;}
 .bento-card { padding: 25px; border-radius: 16px; color: white; }
 .bg-gradient-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); grid-column: span 2; }
 .bg-gradient-teal { background: linear-gradient(135deg, #14b8a6, #0f766e); }
@@ -293,10 +323,8 @@ onMounted(() => {
 .bento-val { font-size: 2rem; font-weight: 700; margin: 0 0 10px 0; }
 .bento-desc { font-size: 0.85rem; opacity: 0.8; margin: 0; }
 
-/* --- RIGHT PANEL (Profile) --- */
-.profile-card { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); padding: 24px; text-align: center; position: relative; }
-.profile-header { display: flex; justify-content: flex-end; color: var(--text-muted); }
-.profile-info { margin-top: -10px; }
+/* PROFILE */
+.profile-card { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); padding: 24px; text-align: center; }
 .profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: 15px; }
 .profile-avatar { width: 80px; height: 80px; background: #f1f5f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: 700; color: #0f172a; border: 4px solid var(--bg-card); }
 .status-dot { position: absolute; bottom: 5px; right: 5px; width: 16px; height: 16px; background: #10b981; border-radius: 50%; border: 2px solid var(--bg-card); }
@@ -306,15 +334,7 @@ onMounted(() => {
 .contact-item { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--text-main); font-weight: 500;}
 .contact-item i { color: var(--text-muted); }
 
-/* --- RIGHT PANEL (Details) --- */
-.details-card { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); padding: 24px; }
-.detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
-.detail-row:last-child { border-bottom: none; padding-bottom: 0; }
-.label { color: var(--text-muted); font-weight: 500; }
-.value { font-weight: 600; }
-.badge-active { color: #10b981; }
-
-/* --- LOADING --- */
+/* LOADING */
 .loading-screen { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2rem; color: var(--text-muted); gap: 10px; }
 
 @media (max-width: 1024px) {
