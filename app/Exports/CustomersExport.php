@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use App\Models\Customer;
@@ -9,11 +10,18 @@ class CustomersExport implements FromCollection, WithHeadings
 {
     public function collection()
     {
+        // Ensure the Customer model is correct
         return Customer::all();
     }
 
     public function headings(): array
     {
-        return ['ID', 'Name', 'Recency (Days)', 'Frequency', 'Monetary ($)'];
+        return [
+            'ID',
+            'Name',
+            'Recency (Days)',
+            'Frequency',
+            'Monetary ($)',
+        ];
     }
 }

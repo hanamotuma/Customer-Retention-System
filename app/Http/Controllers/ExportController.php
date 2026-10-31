@@ -8,13 +8,30 @@ use App\Exports\CustomersExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ExportController extends Controller
 {
     public function exportExcel()
-    {
-        return Excel::download(new CustomersExport, 'customer_retention_data.xlsx');
+{
+    try {
+        return Excel::download(new CustomersExport, 'customers.xlsx');
+
+    } catch (Throwable $e) {
+        Log::error('Excel Export Error: ' . $e->getMessage(), [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
     }
+}
 
     public function exportPdf()
     {

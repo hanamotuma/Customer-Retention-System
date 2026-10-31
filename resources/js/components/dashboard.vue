@@ -32,20 +32,23 @@
                     <h1>Customer Information</h1>
                 </div>
                 
-                <div class="header-actions">
-                    <!-- Single Download Button -->
-                    <button @click="showExportMenu = !showExportMenu" class="btn-outline" style="padding: 8px 12px;">
-                        <i class="fa-solid fa-download"></i> Export
-                    </button>
+                                <div class="header-actions">
+                    
+                    <!-- Dropdown Wrapper -->
+                    <div class="dropdown-wrapper">
+                        <button @click="showExportMenu = !showExportMenu" class="btn-outline" style="padding: 8px 12px;">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
 
-                    <!-- Dropdown Menu -->
-                    <div v-if="showExportMenu" class="export-dropdown">
-                        <button @click="exportData('excel'); showExportMenu = false" class="dropdown-item">
-                            <i class="fa-solid fa-file-excel text-green"></i> Export to Excel
-                        </button>
-                        <button @click="exportData('pdf'); showExportMenu = false" class="dropdown-item">
-                            <i class="fa-solid fa-file-pdf text-red"></i> Export to PDF
-                        </button>
+                        <!-- Clear, Overlaid Menu -->
+                        <div v-if="showExportMenu" class="export-dropdown">
+                            <button @click="exportData('excel'); showExportMenu = false" class="dropdown-item">
+                                <i class="fa-solid fa-file-excel text-green"></i> Export to Excel
+                            </button>
+                            <button @click="exportData('pdf'); showExportMenu = false" class="dropdown-item">
+                                <i class="fa-solid fa-file-pdf text-red"></i> Export to PDF
+                            </button>
+                        </div>
                     </div>
 
                     <div class="user-profile" style="margin-left: 15px;">
@@ -266,19 +269,33 @@ onMounted(() => {
 .btn-outline:hover { background: var(--bg-card); }
 .avatar { width: 40px; height: 40px; border-radius: 50%; }
 
-/* DROPDOWN */
+/* New Wrapper to anchor the menu */
+.dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* The Menu itself */
 .export-dropdown {
     position: absolute;
-    top: 50px;
-    right: 60px; 
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    top: 100%; /* Pushes it exactly to the bottom of the button */
+    right: 0;  /* Aligns it to the right edge of the button */
+    margin-top: 8px;
+    background-color: #ffffff; /* SOLID white background so it doesn't overlap */
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Stronger shadow for clarity */
     width: 180px;
     z-index: 9999; 
     overflow: hidden;
 }
+
+/* Dark mode support for the menu */
+:global(body.dark-theme) .export-dropdown {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
 .dropdown-item {
     display: flex;
     align-items: center;
@@ -293,7 +310,14 @@ onMounted(() => {
     cursor: pointer;
     transition: background 0.2s;
 }
-.dropdown-item:hover { background: var(--bg-main); }
+
+.dropdown-item:hover { 
+    background-color: #f1f5f9; 
+}
+
+:global(body.dark-theme) .dropdown-item:hover {
+    background-color: #0f172a;
+}
 
 /* KPIs */
 .kpi-row { display: flex; gap: 20px; margin-bottom: 30px; }
